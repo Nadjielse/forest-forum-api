@@ -18,7 +18,7 @@ async function read(req, res, next) {
   try {
     const users = await User
       .find()
-      .select("-password");
+      .select("-_id -password");
     
     res.status(200).json({ users });
   } catch(err) {
