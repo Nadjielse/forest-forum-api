@@ -13,6 +13,7 @@ const app = express();
 app.use(morgan("tiny"));
 
 app.use("/api/v1/users", routes.users);
+app.use("/api/v1/posts", routes.posts);
 
 async function start() {
   try {
