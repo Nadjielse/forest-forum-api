@@ -10,6 +10,7 @@ const routes = require("./src/routes");
 const port = process.env.PORT || 3000;
 const app = express();
 
+app.use(express.json());
 app.use(morgan("tiny"));
 
 app.use("/api/v1/users", routes.users);

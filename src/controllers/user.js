@@ -1,5 +1,17 @@
-async function create(req, res) {
-  res.send("User created!");
+const User = require("../models").User;
+
+async function create(req, res, next) {
+  try {
+    const { username, password } = req.body;
+
+    const user = await User.create({ username, password });
+
+    const token = user.jwt();
+
+    res.status(201).json({ token });
+  } catch(err) {
+    next(err);
+  }
 }
 
 async function read(req, res) {
