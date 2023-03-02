@@ -5,14 +5,14 @@ const morgan = require("morgan");
 
 const db = require("./src/db");
 
+const routes = require("./src/routes");
+
 const port = process.env.PORT || 3000;
 const app = express();
 
 app.use(morgan("tiny"));
 
-app.get('/', (req, res) => {
-  res.send("Hello World!");
-});
+app.use("/api/v1/users", routes.users);
 
 async function start() {
   try {
