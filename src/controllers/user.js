@@ -15,7 +15,15 @@ async function create(req, res, next) {
 }
 
 async function read(req, res) {
-  res.send("User info.");
+  try {
+    const users = await User
+      .find()
+      .select("-password");
+    
+    res.status(200).json({ users });
+  } catch(err) {
+    next(err);
+  }
 }
 
 async function readOne(req, res) {
