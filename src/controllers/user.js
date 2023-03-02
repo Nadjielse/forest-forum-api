@@ -14,7 +14,7 @@ async function create(req, res, next) {
   }
 }
 
-async function read(req, res) {
+async function read(req, res, next) {
   try {
     const users = await User
       .find()
@@ -26,8 +26,18 @@ async function read(req, res) {
   }
 }
 
-async function readOne(req, res) {
-  res.send("Nth user info.");
+async function readOne(req, res, next) {
+  try {
+    const { id } = req.params;
+
+    const user = await User
+      .findById(id)
+      .select("-password");
+
+    res.status(200).json({ user });
+  } catch(err) {
+    next(err);
+  }
 }
 
 async function update(req, res) {
