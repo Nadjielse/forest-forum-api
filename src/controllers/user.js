@@ -18,7 +18,7 @@ async function read(req, res, next) {
   try {
     const users = await User
       .find()
-      .select("-_id -password");
+      .select("-password");
     
     res.status(200).json({ users });
   } catch(err) {
@@ -28,10 +28,10 @@ async function read(req, res, next) {
 
 async function readOne(req, res, next) {
   try {
-    const { id } = req.params;
+    const { username } = req.params;
 
     const user = await User
-      .findById(id)
+      .findOne({ username })
       .select("-password");
 
     res.status(200).json({ user });
