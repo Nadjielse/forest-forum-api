@@ -5,7 +5,32 @@ async function register(req, res, next) {
 }
 
 async function login(req, res, next) {
-  res.send("User logged in!");
+  try {
+    const { username, password } = req.body;
+
+    if(!username) {
+      return next(new Error("Username must be provided"));
+    }
+    if(!password) {
+      return next(new Error("Password must be provided"));
+    }
+
+    const user = await User.findOne({ username });
+
+    if(!user) {
+      return next(new Error(`User with username ${username} not found`));
+    }
+
+    if(!await user.checkPassword(password)) {
+      return next(new Error("Wrong password"));
+    }
+
+    const token = user.jwt();
+
+    res.status(200).json({ token });
+  } catch(err) {
+    next(err);
+  }
 }
 
 module.exports = {
