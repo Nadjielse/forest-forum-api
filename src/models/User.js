@@ -10,7 +10,7 @@ const schema = new mongoose.Schema({
   },
   password: {
     type: String,
-    require: [ true, "Password must be provided" ]
+    required: [ true, "Password must be provided" ]
   }
 }, { timestamps: true });
 
