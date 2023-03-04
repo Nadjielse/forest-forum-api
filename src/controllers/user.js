@@ -55,13 +55,15 @@ async function readOne(req, res, next) {
 
 async function update(req, res, next) {
   try {
-    console.log(req.user)
-
     const { id } = req.user;
     const { newUsername, password } = req.body;
     let { newPassword } = req.body;
 
     const user = await User.findById(id);
+
+    if(!user) {
+      return next(new Error(`User with id ${id} not found`));
+    }
 
     if(!password){
       return next(new Error("Password needs to be provided"));
@@ -91,8 +93,30 @@ async function update(req, res, next) {
   }
 }
 
-async function destroy(req, res) {
-  res.send("User destroyed");
+async function destroy(req, res, next) {
+  try {
+    const { id } = req.user;
+    const { password } = req.body;
+
+    const user = await User.findById(id);
+
+    if(!user) {
+      return next(new Error(`User with id ${id} not found`));
+    }
+
+    if(!password){
+      return next(new Error("Password needs to be provided"));
+    }
+    if(!await user.checkPassword(password)){
+      return next(new Error("Wrong password"));
+    }
+
+    await User.findByIdAndDelete(id);
+
+    res.status(200).json({ user });
+  } catch(err) {
+    next(err);
+  }
 }
 
 module.exports = {

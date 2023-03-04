@@ -10,6 +10,6 @@ router.get('/', user.read);
 router.get("/:username", user.readOne);
 router.post('/', user.create);
 router.put('/', auth, user.update);
-router.delete('/', user.destroy);
+router.delete('/', auth, user.destroy);
 
 module.exports = router;
