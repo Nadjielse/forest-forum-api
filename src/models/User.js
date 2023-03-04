@@ -33,6 +33,10 @@ schema.methods.jwt = function() {
   );
 }
 
+schema.methods.checkPassword = async function(password) {
+  return await bcrypt.compare(password, this.password);
+}
+
 const User = mongoose.model("User", schema);
 
 module.exports = User;

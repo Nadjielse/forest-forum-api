@@ -1,4 +1,12 @@
+const bcrypt = require("bcryptjs");
+
 const User = require("../models").User;
+
+async function cryptPassword(password) {
+  const salt = await bcrypt.genSalt(10);
+
+  return await bcrypt.hash(password, salt);
+}
 
 async function create(req, res, next) {
   try {
@@ -40,8 +48,42 @@ async function readOne(req, res, next) {
   }
 }
 
-async function update(req, res) {
-  res.send("User updated!");
+async function update(req, res, next) {
+  try {
+    console.log(req.user)
+    
+    const { id } = req.user;
+    const { newUsername, password } = req.body;
+    let { newPassword } = req.body;
+
+    const user = await User.findById(id);
+
+    if(!password){
+      return next(new Error("Password needs to be provided"));
+    }
+    if(!await user.checkPassword(password)){
+      return next(new Error("Wrong password"));
+    }
+    
+    if(newPassword) {
+      newPassword = await cryptPassword(newPassword);
+    }
+    
+    const updatedUser = await User.findByIdAndUpdate(
+      id,
+      {
+        username: newUsername,
+        password: newPassword
+      },
+      { new: true, runValidators: true }
+    );
+
+    const token = updatedUser.jwt();
+    
+    res.status(200).json({ token });
+  } catch(err) {
+    next(err);
+  }
 }
 
 async function destroy(req, res) {
