@@ -10,7 +10,12 @@ async function cryptPassword(password) {
 
 async function create(req, res, next) {
   try {
-    const { username, password } = req.body;
+    const { username } = req.body;
+    let { password } = req.body;
+
+    if(password) {
+      password = await cryptPassword(password);
+    }
 
     const user = await User.create({ username, password });
 
@@ -51,7 +56,7 @@ async function readOne(req, res, next) {
 async function update(req, res, next) {
   try {
     console.log(req.user)
-    
+
     const { id } = req.user;
     const { newUsername, password } = req.body;
     let { newPassword } = req.body;
