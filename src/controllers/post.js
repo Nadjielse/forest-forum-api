@@ -43,8 +43,29 @@ async function readOne(req, res, next) {
   }
 }
 
-async function update(req, res) {
-  res.send("Post updated!");
+async function update(req, res, next) {
+  try {
+    const { id: author } = req.user;
+    const { id } = req.params;
+    const { newTitle, newContent } = req.body;
+
+    const post = await Post.findOneAndUpdate(
+      { _id: id, author },
+      {
+        title: newTitle,
+        content: newContent
+      },
+      { new: true, runValidators: true }
+    );
+
+    if(!post) {
+      return next(new Error(`Post with id ${id} not found for user ${author}`));
+    }
+
+    res.status(200).json({ post });
+  } catch(err) {
+    next(err);
+  }
 }
 
 async function destroy(req, res) {
