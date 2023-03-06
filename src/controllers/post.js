@@ -17,8 +17,14 @@ async function create(req, res, next) {
   }
 }
 
-async function read(req, res) {
-  res.send("Post info.");
+async function read(req, res, next) {
+  try {
+    const posts = await Post.find();
+
+    res.status(200).json({ posts });
+  } catch(err) {
+    next(err);
+  }
 }
 
 async function readOne(req, res) {
