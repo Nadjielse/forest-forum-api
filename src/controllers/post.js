@@ -27,8 +27,20 @@ async function read(req, res, next) {
   }
 }
 
-async function readOne(req, res) {
-  res.send("Nth post info.");
+async function readOne(req, res, next) {
+  try {
+    const { id } = req.params;
+
+    const post = await Post.findById(id);
+
+    if(!post) {
+      return next(new Error(`Post with id ${id} not found`));
+    }
+
+    res.status(200).json({ post });
+  } catch(err) {
+    next(err);
+  }
 }
 
 async function update(req, res) {
