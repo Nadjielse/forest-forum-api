@@ -68,8 +68,23 @@ async function update(req, res, next) {
   }
 }
 
-async function destroy(req, res) {
-  res.send("Post destroyed");
+async function destroy(req, res, next) {
+  try {
+    const { id: author } = req.user;
+    const { id } = req.params;
+
+    const post = await Post.findOneAndDelete(
+      { _id: id, author }
+    );
+
+    if(!post) {
+      return next(new Error(`Post with id ${id} not found for user ${author}`));
+    }
+
+    res.status(200).json({ post });
+  } catch(err) {
+    next(err);
+  }
 }
 
 module.exports = {

@@ -10,6 +10,6 @@ router.get('/', post.read);
 router.get("/:id", post.readOne);
 router.post('/', auth, post.create);
 router.put("/:id", auth, post.update);
-router.delete("/:id", post.destroy);
+router.delete("/:id", auth, post.destroy);
 
 module.exports = router;
